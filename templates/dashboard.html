@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Your SSL Dashboard{% endblock %}
+{% block content %}
+<div class="card">
+    <h2>Your SSL Dashboard</h2>
+    <p>Total Approved Hours: <strong>{{ total_hours }} / {{ goal }}</strong></p>
+
+    <div style="width:100%; background:#ddd; border-radius:10px; margin-top:12px;">
+        <div style="width:{{ progress_percentage }}%; height:25px; background:#4CAF50; text-align:center; color:white; border-radius:10px; line-height:25px; min-width:{% if progress_percentage > 0 %}2%{% else %}0{% endif %};">
+            {{ progress_percentage|floatformat:0 }}%
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Your Recent Logs</h3>
+    {% if logs %}
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#f0f0f0;">
+                <th style="padding:10px; text-align:left; border-bottom:2px solid #ddd;">Date</th>
+                <th style="padding:10px; text-align:left; border-bottom:2px solid #ddd;">Organization</th>
+                <th style="padding:10px; text-align:left; border-bottom:2px solid #ddd;">Hours</th>
+                <th style="padding:10px; text-align:left; border-bottom:2px solid #ddd;">Supervisor</th>
+                <th style="padding:10px; text-align:left; border-bottom:2px solid #ddd;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:10px;">{{ log.volunteer_date }}</td>
+                <td style="padding:10px;">{{ log.organization_name }}</td>
+                <td style="padding:10px;">{{ log.hours_worked }}</td>
+                <td style="padding:10px;">{{ log.supervisor_name }}</td>
+                <td style="padding:10px;">
+                    {% if log.status == 'A' %}
+                        <span style="color:#4CAF50; font-weight:bold;">{{ log.get_status_display }}</span>
+                    {% elif log.status == 'R' %}
+                        <span style="color:#e74c3c; font-weight:bold;">{{ log.get_status_display }}</span>
+                    {% else %}
+                        <span style="color:#f39c12;">{{ log.get_status_display }}</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#777;">No volunteer logs yet. Add your first entry below!</p>
+    {% endif %}
+    <br>
+    <a href="/add-log/" class="btn">+ Add New Volunteer Hours</a>
+</div>
+{% endblock %}
